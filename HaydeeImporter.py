@@ -24,7 +24,7 @@ from bpy_extras.wm_utils.progress_report import (
 # ImportHelper is a helper class, defines filename and
 # invoke() function which calls the file selector.
 from bpy_extras.io_utils import ImportHelper
-from bpy.props import StringProperty, BoolProperty, EnumProperty
+from bpy.props import StringProperty, BoolProperty, EnumProperty,CollectionProperty
 from bpy.types import Operator
 from mathutils import Quaternion, Vector, Matrix
 
@@ -1071,13 +1071,20 @@ class ImportHaydeeDMesh(Operator, ImportHelper):
     )
 
     file_format: file_format_prop
+    directory:StringProperty(subtype='DIR_PATH')
+    files: CollectionProperty(
+            type=bpy.types.OperatorFileListElement,
+            options={'HIDDEN', 'SKIP_SAVE'},
+        )
 
     def invoke(self, context, event):
         context.window_manager.fileselect_add(self)
         return {'RUNNING_MODAL'}
 
     def execute(self, context):
-        return read_dmesh(self, context, self.filepath, self.file_format)
+        for filepath in self.files:
+            read_dmesh(self, context, self.filepath, self.file_format)
+        return {"FINISHED"}
 
 
 # --------------------------------------------------------------------------------
@@ -1213,13 +1220,20 @@ class ImportHaydeeMesh(Operator, ImportHelper):
     )
 
     file_format: file_format_prop
+    directory:StringProperty(subtype='DIR_PATH')
+    files: CollectionProperty(
+            type=bpy.types.OperatorFileListElement,
+            options={'HIDDEN', 'SKIP_SAVE'},
+        )
 
     def invoke(self, context, event):
         context.window_manager.fileselect_add(self)
         return {'RUNNING_MODAL'}
 
     def execute(self, context):
-        return read_mesh(self, context, self.filepath, None, self.file_format)
+        for filepath in self.files:
+             read_mesh(self, context, self.directory+filepath.name, None, self.file_format)
+        return {"FINISHED"}
 
 
 # --------------------------------------------------------------------------------
