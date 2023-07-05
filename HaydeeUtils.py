@@ -34,7 +34,9 @@ def boneRenameHaydee(bone_name):
 
 
 def stripName(name):
-    return name.replace(" ", "_").replace("*", "_").replace("-", "_")
+    """ Remove invalid characters from a name"""
+    out=name.replace(" ", "_").replace("*", "_").replace("-", "_")
+    return bpy.path.clean_name(out)
 
 
 def decodeText(text):
@@ -47,6 +49,11 @@ def d(number):
         return "0"
     return r
 
+def hashedN(numbers):
+    if type(numbers) is not tuple:
+        return hash(tuple(numbers))
+
+    return hash(numbers)
 # --------------------------------------------------------------------------------
 #  Finds a suitable armature in the current selection or scene
 # --------------------------------------------------------------------------------
@@ -131,7 +138,7 @@ def apply_pose(selected, active):
         index = obj.modifiers.find(modif.name)
         bpy.ops.object.modifier_copy(modifier=modif.name)
         new_modif_name = obj.modifiers[index + 1].name
-        bpy.ops.object.modifier_apply(apply_as='DATA', modifier=new_modif_name)
+        bpy.ops.object.modifier_apply(modifier=new_modif_name)
         modif.object = active
     bpy.context.view_layer.objects.active = active
 
@@ -173,7 +180,7 @@ class HaydeeToolFitArmature_Op(bpy.types.Operator):
     bl_idname = 'haydee_tools.fit_to_armature'
     bl_label = 'Cycles'
     bl_description = 'Select the mesh armature then the haydee Skel. Raplces the Armature with the skel. Uses the Skel pose'
-    bl_options = {'PRESET'}
+    bl_options = {'PRESET',"UNDO"}
 
     def execute(self, context):
         fit_to_armature()
@@ -184,7 +191,7 @@ class HaydeeToolFitMesh_Op(bpy.types.Operator):
     bl_idname = 'haydee_tools.fit_to_mesh'
     bl_label = 'Cycles'
     bl_description = 'Select the mesh armature then the haydee Skel. Raplces the Armature with the skel. Uses the Armature pose'
-    bl_options = {'PRESET'}
+    bl_options = {'PRESET',"UNDO"}
 
     def execute(self, context):
         fit_to_mesh()
