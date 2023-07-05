@@ -26,6 +26,7 @@ _modules = [
     'HaydeeImporter',
     'HaydeeNodeMat',
     'addon_updater_ops',
+    'exporter'
 ]
 
 # Reload previously loaded modules
