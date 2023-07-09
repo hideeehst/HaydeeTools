@@ -1,7 +1,7 @@
 Fork of the Haydee Tools where I try to include some more features.
-Original works by johnzero7, Pooka, Kein
+Original works by johnzero7, Pooka and Kein
 
-currently it features:
+Currently it features:
 - running on blender 3.3 LTS
 - improved dmesh export speed (A)
 - potential fix for crashing when browsing dmesh in the edith (B)
@@ -9,11 +9,11 @@ currently it features:
 
 
 (A) It has been observed that skeletal-meshes with 200k polygons and 50 Joints was taking around 57 minutes to export. Now the time to export has been reduced to 6 seconds.
-For the lols: Export of Blender monkey with 2million polygons takes now 2 minutes, instead of 
+Export of the Blender monkey with 2million polygons takes now 2 minutes, instead of multiple hours
 
 (B) The problem may be the name of the exported object-groups inside the dmesh, when they include dots,spaces,dashes and other special characters
     
-(C) Import of multiple meshes at once is now possible
+(C) Import of multiple meshes at once is now possible.
 
 Haydee Tools
 =========
