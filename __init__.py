@@ -4,14 +4,14 @@
 
 bl_info = {
     "name": "Haydee 1 & 2 I/O Scripts",
-    "author": "johnzero7, Pooka, Kein",
-    "version": (1, 3, 1),
+    "author": "johnzero7, Pooka, Kein,SmittyWerbenJJ",
+    "version": (1, 3, 2),
     "blender": (2, 80, 0),
     "location": "File > Import-Export > HaydeeTools",
     "description": "Import-Export scripts for Haydee",
     "warning": "",
-    "wiki_url": "https://github.com/johnzero7/HaydeeTools",
-    "tracker_url": "https://github.com/johnzero7/HaydeeTools/issues",
+    "doc_url": "https://github.com/SmittyWerbenJJ/HaydeeTools",
+    "tracker_url": "https://github.com/SmittyWerbenJJ/HaydeeTools/issues",
     "category": "Import-Export",
 }
 
