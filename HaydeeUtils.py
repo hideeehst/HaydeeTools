@@ -328,3 +328,13 @@ class HaydeeToolFitMesh_Op(bpy.types.Operator):
     def execute(self, context):
         fit_to_mesh()
         return {'FINISHED'}
+
+
+def register():
+    bpy.utils.register_class(HaydeeToolFitArmature_Op)
+    bpy.utils.register_class(HaydeeToolFitMesh_Op)
+
+
+def unregister():
+    bpy.utils.unregister_class(HaydeeToolFitArmature_Op)
+    bpy.utils.unregister_class(HaydeeToolFitMesh_Op)

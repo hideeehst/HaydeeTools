@@ -16,7 +16,6 @@ from .import_skin import read_skin
 # --------------------------------------------------------------------------------
 
 
-# profile
 def read_outfit(operator, context, filepath, file_format):
     print('Outfit:', filepath)
     with ProgressReport(context.window_manager) as progReport:
