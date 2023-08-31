@@ -2,6 +2,14 @@
 
 import bpy
 from bpy.props import EnumProperty
+import os
+from .HaydeeConstants import *
+import codecs
+from mathutils import Vector
+from bpy_extras.wm_utils.progress_report import (
+    ProgressReport,
+    ProgressReportSubstep,
+)
 
 NAME_LIMIT = 31
 
@@ -175,6 +183,130 @@ def new_rest_pose(selected, active):
     for modif in modifiers:
         modif.object = active
 
+
+def haydeeFilepath(mainpath, filepath):
+    path = filepath
+    if not os.path.isabs(filepath):
+        # Current Folder
+        currPath = os.path.relpath(filepath, r'outfits')
+        basedir = os.path.dirname(mainpath)
+        path = os.path.join(basedir, currPath)
+        if not (os.path.isfile(path)):
+            # Outfit Folder
+            path = filepath
+            idx = basedir.lower().find(r'\outfit')
+            path = basedir[:idx]
+            path = os.path.join(path, filepath)
+    return path
+
+
+def coordTransform(coord):
+    return [-coord[0], -coord[2], coord[1]]
+
+
+def readVec(line_split, vec_data, vec_len, func):
+    vec = [func(v) for v in line_split[1:]]
+    vec_data.append(tuple(vec[:vec_len]))
+
+
+def readWeights(line_split, vert_data):
+    vec = tuple((int(line_split[1]), int(line_split[2]), float(line_split[3])))
+    vert_data.append(vec)
+
+
+def stripLine(line):
+    return line.strip().strip(';')
+
+
+# --------------------------------------------------------------------------------
+# binary helpers
+# --------------------------------------------------------------------------------
+
+
+def sig_check(mview):
+    result = None
+    if (mview[0:8] == (HD_CHUNK)):
+        result = Signature.HD_CHUNK
+    elif (mview[0:11] == (HD_DATA_TXT)):
+        result = Signature.HD_DATA_TXT
+    elif (mview[0:24] == (HD_DATA_TXT_BOM)):
+        result = Signature.HD_DATA_TXT_BOM
+    elif (mview[0:10] == (HD_MOTION)):
+        result = Signature.HD_MOTION
+    return result
+
+
+# Read prefixed ANSI/utf8-as-ansi string
+def readStrA(start, data):
+    len = int.from_bytes(data[start:start + 4], byteorder='little')
+    start += 4
+    return (data[start:start + len].decode("utf-8"), 4 + len + 1)
+
+
+# Read property name (until null terminator)
+def readStrA_term(start, maxLen, data):
+    i, tStr, found = -1, "", False
+    while (i < maxLen):
+        i += 1
+        if (data[start + i] <= 0):
+            found = True
+            break
+    if (found):
+        tStr = codecs.decode(data[start:start + i], "latin")
+    return (tStr, i)
+
+
+# Read UTF16/wide string
+def readStrW(start, data):
+    i = int.from_bytes(data[start:start + 4], byteorder='little')
+    len = (i * 2)
+    start += 4
+    return (codecs.decode(data[start:start + len], "utf-16-le"), 4 + len + 2)
+
+
+# Vector from Haydee format to Blender
+def vectorSwapSkel(vec):
+    return Vector((-vec.z, vec.y, -vec.x))
+
+
+def createCollection(name="Haydee Model"):
+    # Create a collection with specific name
+    collection = bpy.data.collections.new(name)
+    bpy.context.scene.collection.children.link(collection)
+    return collection
+
+
+def linkToActiveCollection(obj):
+    # link object to active collection
+    bpy.context.collection.objects.link(obj)
+
+
+def recurLayerCollection(layerColl, collName):
+    # transverse the layer_collection tree looking for a collection named collName
+    found = None
+    if (layerColl.name == collName):
+        return layerColl
+    for layer in layerColl.children:
+        found = recurLayerCollection(layer, collName)
+        if found:
+            return found
+
+
+def setActiveCollection(collName):
+    # set collName as the active collection
+    layer_collection = bpy.context.view_layer.layer_collection
+    layerColl = recurLayerCollection(layer_collection, collName)
+    if layerColl:
+        bpy.context.view_layer.active_layer_collection = layerColl
+
+
+
+def find_encoding(filepath)->str:
+    """Find File enoding using charset_normalizer """
+    import charset_normalizer
+    with (open(filepath, 'rb')) as f:
+        encoding = charset_normalizer.detect(f.read())['encoding']
+    return encoding
 
 class HaydeeToolFitArmature_Op(bpy.types.Operator):
     bl_idname = 'haydee_tools.fit_to_armature'

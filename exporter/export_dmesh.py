@@ -1,9 +1,16 @@
-import bpy
-from mathutils import Vector,Matrix,Quaternion
-from ..HaydeeUtils import d, hashedN, stripName, boneRenameHaydee, NAME_LIMIT
-import re
-from math import pi
 import os
+import re
+import bpy
+from math import pi
+from bpy.props import *
+from bpy.types import Operator
+from bpy_extras.io_utils import ExportHelper
+from mathutils import Vector,Matrix,Quaternion
+from ..HaydeeUtils import *
+
+# --------------------------------------------------------------------------------
+#  .dmesh exporter
+# --------------------------------------------------------------------------------
 
 class DMesh:
     def __init__(self):
@@ -429,3 +436,59 @@ def write_dmesh(operator, context, filepath, export_skeleton,
 
     operator.report({"INFO"}, f"Exported {group_name}")
     return {'FINISHED'}
+
+
+class ExportHaydeeDMesh(Operator, ExportHelper):
+    bl_idname = "haydee_exporter.dmesh"
+    bl_label = "Export Haydee dmesh"
+    bl_options = {'REGISTER'}
+    filename_ext = ".dmesh"
+    filter_glob: StringProperty(
+        default="*.dmesh",
+        options={'HIDDEN'},
+        maxlen=255,  # Max internal buffer length, longer would be clamped.
+    )
+
+    # List of operator properties, the attributes will be assigned
+    # to the class instance from the operator settings before calling.
+    file_format: file_format_prop
+
+    selected_only: BoolProperty(
+        name="Selected only",
+        description=
+        "Export only selected objects (if nothing is selected, full scene will be exported regardless of this setting)",
+        default=True,
+    )
+    separate_files: BoolProperty(
+        name="Export to Separate Files",
+        description="Export each object to a separate file",
+        default=False,
+    )
+    ignore_hidden: BoolProperty(
+        name="Ignore hidden",
+        description="Ignore hidden objects",
+        default=True,
+    )
+    apply_modifiers: BoolProperty(
+        name="Apply modifiers",
+        description="Apply modifiers before exporting",
+        default=True,
+    )
+    export_skeleton: BoolProperty(
+        name="Export skeleton",
+        description="Export skeleton and vertex weights",
+        default=True,
+    )
+    material: EnumProperty(name="Material",
+                           description="Material to export",
+                           items=materials_list)
+
+    def invoke(self, context, event):
+        context.window_manager.fileselect_add(self)
+        return {'RUNNING_MODAL'}
+
+    def execute(self, context):
+        return write_dmesh(self, context, self.filepath, self.export_skeleton,
+                           self.apply_modifiers, self.selected_only,
+                           self.separate_files, self.ignore_hidden,
+                           self.material, self.file_format)
