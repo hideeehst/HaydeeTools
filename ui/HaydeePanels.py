@@ -1,7 +1,6 @@
 # <pep8 compliant>
 
 import bpy
-from . import HaydeeMenuIcon
 
 class _HaydeeToolsPanel():
     bl_space_type = 'VIEW_3D'
