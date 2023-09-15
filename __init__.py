@@ -19,15 +19,13 @@ import bpy
 from . import haydee_importer as HaydeeImporter
 from . import haydee_exporter as HaydeeExporter
 from . import HaydeePreferences
-from .ui import HaydeeMenuIcon
-from .ui import HaydeePanels
-from .ui import HaydeeMenus
+from .haydee_ui import haydee_ui as HaydeeUI
 from . import HaydeeUtils
 from . import addon_updater_ops
 
 # Modules with register and unregister functions
 modulesToRegister = [
-    HaydeeUtils, HaydeePanels, HaydeeMenus, HaydeePreferences, HaydeeMenuIcon,HaydeeImporter,HaydeeExporter
+    HaydeeUtils, HaydeePreferences, HaydeeUI, HaydeeImporter,HaydeeExporter
 ]
 
 def register():

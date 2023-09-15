@@ -2,8 +2,8 @@ import bpy
 from bpy.props import StringProperty, BoolProperty
 from bpy.types import Operator
 from . import HaydeeMenuIcon
-from ..haydee_exporter import *
-from ..haydee_importer import *
+from ..haydee_exporter.haydee_exporter import *
+from ..haydee_importer.haydee_importer import *
 
 # --------------------------------------------------------------------------------
 #  Exporter Initialization & menu
