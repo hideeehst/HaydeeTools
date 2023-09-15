@@ -78,9 +78,5 @@ class ExportHaydeeDMotion(Operator, ExportHelper):
         maxlen=255,  # Max internal buffer length, longer would be clamped.
     )
 
-    def invoke(self, context, event):
-        context.window_manager.fileselect_add(self)
-        return {'RUNNING_MODAL'}
-
     def execute(self, context):
         return write_dmot(self, context, self.filepath)

@@ -483,10 +483,6 @@ class ExportHaydeeDMesh(Operator, ExportHelper):
                            description="Material to export",
                            items=materials_list)
 
-    def invoke(self, context, event):
-        context.window_manager.fileselect_add(self)
-        return {'RUNNING_MODAL'}
-
     def execute(self, context):
         return write_dmesh(self, context, self.filepath, self.export_skeleton,
                            self.apply_modifiers, self.selected_only,
