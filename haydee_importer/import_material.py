@@ -10,7 +10,7 @@ import os
 from io import BytesIO
 from mathutils import Quaternion, Vector
 from ..HaydeeUtils import *
-from ..HaydeeNodeMat import create_material
+from .HaydeeNodeMat import create_material
 
 
 # --------------------------------------------------------------------------------
