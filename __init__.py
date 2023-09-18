@@ -27,12 +27,14 @@ from . import addon_updater_ops
 modulesToRegister = [
     HaydeeUtils, HaydeePreferences, HaydeeUI, HaydeeImporter,HaydeeExporter
 ]
-
+import zipfile
 def register():
     """Register addon classes."""
 
-    try:unregister()
-    except:pass
+    for cls in modulesToRegister:
+        try:
+            cls.unregister()
+        except:pass
 
     for module in modulesToRegister:
         module.register()
@@ -42,7 +44,7 @@ def register():
 
 def unregister():
     """Unregister addon classes."""
-    for module in reversed(modulesToRegister):
+    for module in modulesToRegister:
         module.unregister()
 
     addon_updater_ops.unregister()
