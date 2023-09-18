@@ -75,7 +75,7 @@ def copy_to_blender_addons(project_dir:str,blender_version=BLENDER_VERSION_STR):
     print("Copying to blender addons folder...")
     project_name=Path(project_dir).name
     blender_addons_folder=Path(os.getenv('APPDATA')).joinpath(rf"Blender Foundation\Blender\{blender_version}\scripts\addons")
-    haydeetools_addons_folder=blender_addons_folder.joinpath(project_name)
+
 
     final_zip_path = Path(project_dir).joinpath("build").joinpath(
         project_name + ".zip")
@@ -94,7 +94,7 @@ def copy_to_blender_addons(project_dir:str,blender_version=BLENDER_VERSION_STR):
 
     print("Creating Addon in Blender addons ...")
     dst_folder.mkdir(parents=True,exist_ok=True)
-    zipfile.ZipFile(final_zip_path).extractall(haydeetools_addons_folder)
+    zipfile.ZipFile(final_zip_path).extractall(blender_addons_folder)
 
 
 def build():
