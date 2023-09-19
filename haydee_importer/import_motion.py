@@ -183,8 +183,9 @@ def read_motion(operator, context, filepath):
                 m.translation = origin
                 poseBone.matrix = r @ m
 
-        bpy.ops.anim.keyframe_insert(type='Rotation')
-        bpy.ops.anim.keyframe_insert(type='Location')
+        bpy.ops.anim.keyframe_insert_menu(type='Rotation')
+        bpy.ops.anim.keyframe_insert_menu(type='Location')
+
         for name, keys in bones.items():
             if not (bone_name in armature.data.bones):
                 continue
